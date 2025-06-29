@@ -3,20 +3,20 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 export const fetchHabits = createAsyncThunk("Habits/fetch", async () => {
   await new Promise((resolve) => setTimeout(resolve, 1000));
   const mockHabits = [
-    {
-      id: "1",
-      name: "Read Book",
-      frequency: "daily",
-      createdDates: [],
-      createdAt: new Date().toISOString(),
-    },
-    {
-      id: "2",
-      name: "Walk",
-      frequency: "daily",
-      createdDates: [],
-      createdAt: new Date().toISOString(),
-    },
+    // {
+    //   id: "1",
+    //   name: "Read Book",
+    //   frequency: "daily",
+    //   createdDates: [],
+    //   createdAt: new Date().toISOString(),
+    // },
+    // {
+    //   id: "2",
+    //   name: "Walk",
+    //   frequency: "daily",
+    //   createdDates: [],
+    //   createdAt: new Date().toISOString(),
+    // },
   ];
   return mockHabits;
 });
