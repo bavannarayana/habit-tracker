@@ -2,32 +2,38 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
 export const fetchHabits = createAsyncThunk("Habits/fetch", async () => {
   await new Promise((resolve) => setTimeout(resolve, 1000));
-  const mockHabits = [
-    // {
-    //   id: "1",
-    //   name: "Read Book",
-    //   frequency: "daily",
-    //   createdDates: [],
-    //   createdAt: new Date().toISOString(),
-    // },
-    // {
-    //   id: "2",
-    //   name: "Walk",
-    //   frequency: "daily",
-    //   createdDates: [],
-    //   createdAt: new Date().toISOString(),
-    // },
-  ];
+  const mockHabits = [];
   return mockHabits;
 });
 
+function addToLocalStorage(state) {
+  try {
+    const serialized = JSON.stringify(state.habits);
+    localStorage.setItem("habit", serialized);
+  } catch (error) {
+    console.warn("Unable to add the habit!" + error);
+  }
+}
+
+function loadFromLocalStorage() {
+  try {
+    const serialized = JSON.stringify(localStorage.getItem("habit"));
+    if (serialized === null) return [];
+    return JSON.parse(serialized);
+  } catch (error) {
+    console.log("Unable to load habit" + error);
+  }
+}
+
+const initialState = {
+  habits: JSON.parse(loadFromLocalStorage()) || [],
+  isLoading: false,
+  error: null,
+};
+
 const habitSlice = createSlice({
   name: "Habits",
-  initialState: {
-    habits: [],
-    isLoading: false,
-    error: null,
-  },
+  initialState,
   reducers: {
     addHabit: (state, action) => {
       const newHabit = {
@@ -38,6 +44,7 @@ const habitSlice = createSlice({
         createdDates: [],
       };
       state.habits.push(newHabit);
+      addToLocalStorage(state);
     },
     toggleHabit: (state, action) => {
       const habit = state.habits.find((h) => h.id === action.payload.id);
@@ -49,12 +56,17 @@ const habitSlice = createSlice({
           habit.createdDates.push(action.payload.date);
         }
       }
+      addToLocalStorage(state);
     },
     removeHabit: (state, action) => {
-      const newHabits = state.habits.filter(
+      state.habits = state.habits.filter(
         (habit) => habit.id !== action.payload.id
       );
-      state.habits = newHabits;
+      addToLocalStorage(state);
+    },
+    clearHabits: (state) => {
+      state.habits = [];
+      addToLocalStorage(state);
     },
   },
   extraReducers: (builder) => {
@@ -65,6 +77,7 @@ const habitSlice = createSlice({
       .addCase(fetchHabits.fulfilled, (state, action) => {
         state.isLoading = false;
         state.habits = action.payload;
+        addToLocalStorage(state);
       })
       .addCase(fetchHabits.rejected, (state, action) => {
         state.isLoading = false;
@@ -73,6 +86,7 @@ const habitSlice = createSlice({
   },
 });
 
-export const { addHabit, removeHabit, toggleHabit } = habitSlice.actions;
+export const { addHabit, removeHabit, toggleHabit, clearHabits } =
+  habitSlice.actions;
 
 export default habitSlice.reducer;

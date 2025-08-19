@@ -9,7 +9,7 @@ import {
 } from "@mui/material";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
-import { addHabit } from "../store/habitSlice";
+import { addHabit, clearHabits } from "../store/habitSlice";
 
 function FormHabits() {
   const [name, setName] = useState("");
@@ -22,6 +22,11 @@ function FormHabits() {
     name !== "" && dispatch(addHabit({ name, frequency }));
     setName("");
   }
+
+  const handleClear = () => {
+    dispatch(clearHabits());
+  };
+
   return (
     <form onSubmit={handleSubmit}>
       <Box
@@ -49,6 +54,9 @@ function FormHabits() {
         </FormControl>
         <Button type="submit" variant="contained" color="primary">
           Add habit
+        </Button>
+        <Button color="secondary" variant="contained" onClick={handleClear}>
+          Clear
         </Button>
       </Box>
     </form>

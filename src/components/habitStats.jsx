@@ -1,15 +1,10 @@
 import { LinearProgress, Paper, Typography } from "@mui/material";
-import React, { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { fetchHabits } from "../store/habitSlice";
+import React from "react";
+import { useSelector } from "react-redux";
+// import { initialState } from "../store/habitSlice";
 
 const HabitStats = () => {
   const { habits, isLoading, error } = useSelector((state) => state.habits);
-  const dispatch = useDispatch();
-
-  useEffect(() => {
-    dispatch(fetchHabits());
-  }, []);
 
   const getStreak = function (habit) {
     const currentDate = new Date();
